@@ -51,3 +51,7 @@ class RideViewSet(viewsets.ModelViewSet):
             ).order_by("distance")
 
         return self.queryset
+
+    def update(self, request, *args, **kwargs):
+        kwargs["partial"] = True
+        return super().update(request, *args, **kwargs)

@@ -13,7 +13,7 @@ def api_client():
 def admin_user(db):
     user = User.objects.create_user(
         username="admin1",
-        email="admin@example.com",
+        email="admin@test.com",
         password="adminpass",
         role="admin",
         is_staff=True
@@ -32,7 +32,7 @@ class TestUserAPI:
     def test_create_user(self, auth_client):
         payload = {
             "username": "newuser",
-            "email": "newuser@example.com",
+            "email": "newuser@test.com",
             "password": "testpass123",
             "role": "rider",
             "first_name": "New",
