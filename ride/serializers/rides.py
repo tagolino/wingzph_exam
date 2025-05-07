@@ -1,29 +1,32 @@
 from rest_framework import serializers
 
-from ..models import Ride
+from ..models import Ride, RideEvent
 from core.models import User
+from core.serializers import UserShortSerializer
 
 
-class UserBriefSerializer(serializers.ModelSerializer):
+class RideEventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ["id", "username", "first_name", "last_name"]
+        model = RideEvent
+        fields = ["id", "description", "created_at"]
 
 
 class RideSerializer(serializers.ModelSerializer):
-    id_rider = UserBriefSerializer(read_only=True)
-    id_driver = UserBriefSerializer(read_only=True)
+    rider = UserShortSerializer(source="id_rider", required=False)
+    driver = UserShortSerializer(source="id_driver", required=False)
 
-    id_rider_id = serializers.PrimaryKeyRelatedField(
+    rider_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.filter(role="rider"),
         source="id_rider",
         write_only=True
     )
-    id_driver_id = serializers.PrimaryKeyRelatedField(
+    driver_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.filter(role="driver"),
         source="id_driver",
         write_only=True
     )
+
+    todays_ride_events = RideEventSerializer(many=True, read_only=True)
 
     class Meta:
         model = Ride
@@ -35,8 +38,9 @@ class RideSerializer(serializers.ModelSerializer):
             "dropoff_latitude",
             "dropoff_longitude",
             "pickup_time",
-            "id_rider",
-            "id_driver",
-            "id_rider_id",
-            "id_driver_id",
+            "rider",
+            "driver",
+            "rider_id",
+            "driver_id",
+            "todays_ride_events",
         ]
